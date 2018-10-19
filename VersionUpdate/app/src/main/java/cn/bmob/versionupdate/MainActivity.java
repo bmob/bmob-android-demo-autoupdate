@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_SILENT = 1003;
     private static final int REQUEST_DELETE = 1004;
 
-
+   private UpdateResponse updateResponse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onUpdateReturned(int updateStatus, UpdateResponse updateInfo) {
                 BmobException e = updateInfo.getException();
                 if (e == null) {
+                    updateResponse = updateInfo;
                     Toast.makeText(MainActivity.this, "检测更新返回：" + updateInfo.version + "-" + updateInfo.path, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "检测更新返回：" + e.getMessage() + "(" + e.getErrorCode() + ")", Toast.LENGTH_SHORT).show();
@@ -103,13 +104,13 @@ public class MainActivity extends AppCompatActivity {
                     BmobUpdateAgent.update(this);
                     break;
                 case REQUEST_CHECK:
-                    BmobUpdateAgent.update(this);
+                    BmobUpdateAgent.forceUpdate(this);
                     break;
                 case REQUEST_SILENT:
-                    BmobUpdateAgent.update(this);
+                    BmobUpdateAgent.silentUpdate(this);
                     break;
                 case REQUEST_DELETE:
-                    BmobUpdateAgent.update(this);
+                    BmobUpdateAgent.deleteResponse(updateResponse);
                     break;
                 default:
                     break;
@@ -146,17 +147,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case REQUEST_CHECK:
                 if (checkResults(grantResults)) {
-                    BmobUpdateAgent.update(this);
+                    BmobUpdateAgent.forceUpdate(this);
                 }
                 break;
             case REQUEST_SILENT:
                 if (checkResults(grantResults)) {
-                    BmobUpdateAgent.update(this);
+                    BmobUpdateAgent.silentUpdate(this);
                 }
                 break;
             case REQUEST_DELETE:
                 if (checkResults(grantResults)) {
-                    BmobUpdateAgent.update(this);
+                    BmobUpdateAgent.deleteResponse(updateResponse);
                 }
                 break;
             default:
